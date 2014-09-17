@@ -1,11 +1,10 @@
 Name:
 Blue Marble
 Tags:
-shader, bump mapping, specular  texture, clouds
+shader, bump mapping, specular textures, dynamic clouds
 Description:
-Earth model with bump mapping, specular texture and dynamic cloud layer.
-
-Adpated from the THREE.js tutorial: http://learningthreejs.com/blog/2013/09/16/how-to-make-the-earth-in-webgl/
+Adpated from the THREE.js tutorial:
+http://learningthreejs.com/blog/2013/09/16/how-to-make-the-earth-in-webgl/
 Autor:
 andres
 Email:
