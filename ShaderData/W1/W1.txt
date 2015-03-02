@@ -1,10 +1,10 @@
 Name:
 W1
 Tags:
-shader, Prueba
+shader, W1, Prueba, Test, 
 Description:
-Prueba
+W1
 Autor:
-Prueba
+DonPrueba
 Email:
 add your email (optional)
