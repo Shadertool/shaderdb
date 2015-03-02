@@ -3,8 +3,8 @@ W1
 Tags:
 shader, W1
 Description:
-Prueba, Test
+W1
 Autor:
-Prueba1
+W1
 Email:
 add your email (optional)
