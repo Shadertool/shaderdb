@@ -5,6 +5,6 @@ shader, W1
 Description:
 W1
 Autor:
-w1
+W1
 Email:
 add your email (optional)
