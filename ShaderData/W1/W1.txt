@@ -1,10 +1,10 @@
 Name:
 W1
 Tags:
-shader, W1
+shader, L1
 Description:
-W1
+L1
 Autor:
-Prueba
+Test
 Email:
 add your email (optional)
