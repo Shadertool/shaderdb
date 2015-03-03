@@ -1,43 +1,31 @@
-#ifdef GL_ES
-precision mediump float;
-precision mediump int;
-#endif
+#define PROCESSING_COLOR_SHADER
 
-#define PROCESSING_TEXTURE_SHADER
-
-uniform sampler2D texture;
-uniform vec2 texOffset;
-
-varying vec4 vertColor;
-varying vec4 vertTexCoord;
+uniform vec2 resolution;
+uniform float time;
 
 void main(void) {
-  // Grouping texcoord variables in order to make it work in the GMA 950. See post #13
-  // in this thread:
-  // http://www.idevgames.com/forums/thread-3467.html
-  vec2 tc0 = vertTexCoord.st + vec2(-texOffset.s, -texOffset.t);
-  vec2 tc1 = vertTexCoord.st + vec2(         0.0, -texOffset.t);
-  vec2 tc2 = vertTexCoord.st + vec2(+texOffset.s, -texOffset.t);
-  vec2 tc3 = vertTexCoord.st + vec2(-texOffset.s,          0.0);
-  vec2 tc4 = vertTexCoord.st + vec2(         0.0,          0.0);
-  vec2 tc5 = vertTexCoord.st + vec2(+texOffset.s,          0.0);
-  vec2 tc6 = vertTexCoord.st + vec2(-texOffset.s, +texOffset.t);
-  vec2 tc7 = vertTexCoord.st + vec2(         0.0, +texOffset.t);
-  vec2 tc8 = vertTexCoord.st + vec2(+texOffset.s, +texOffset.t);
-
-  vec4 col0 = texture2D(texture, tc0);
-  vec4 col1 = texture2D(texture, tc1);
-  vec4 col2 = texture2D(texture, tc2);
-  vec4 col3 = texture2D(texture, tc3);
-  vec4 col4 = texture2D(texture, tc4);
-  vec4 col5 = texture2D(texture, tc5);
-  vec4 col6 = texture2D(texture, tc6);
-  vec4 col7 = texture2D(texture, tc7);
-  vec4 col8 = texture2D(texture, tc8);
-
-  vec4 sum = (1.0 * col0 + 2.0 * col1 + 1.0 * col2 +  
-              2.0 * col3 + 4.0 * col4 + 2.0 * col4 +
-              1.0 * col5 + 2.0 * col6 + 1.0 * col7) / 16.0;            
-  gl_FragColor = vec4(sum.rgb, 1.0) * vertColor;  
+  vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
+  float a = time*40.0;
+  float d,e,f,g=1.0/40.0,h,i,r,q;
+  e=400.0*(p.x*0.5+0.5);
+  f=400.0*(p.y*0.5+0.5);
+  i=200.0+sin(e*g+a/150.0)*20.0;
+  d=200.0+cos(f*g/2.0)*18.0+cos(e*g)*7.0;
+  r=sqrt(pow(i-e,2.0)+pow(d-f,2.0));
+  q=f/r;
+  e=(r*cos(q))-a/2.0;f=(r*sin(q))-a/2.0;
+  d=sin(e*g)*176.0+sin(e*g)*164.0+r;
+  h=((f+d)+a/2.0)*g;
+  i=cos(h+r*p.x/1.3)*(e+e+a)+cos(q*g*6.0)*(r+h/3.0);
+  h=sin(f*g)*144.0-sin(e*g)*212.0*p.x;
+  h=(h+(f-e)*q+sin(r-(a+h)/7.0)*10.0+i/4.0)*g;
+  i+=cos(h*2.3*sin(a/350.0-q))*184.0*sin(q-(r*4.3+a/12.0)*g)+tan(r*g+h)*184.0*cos(r*g+h);
+  i=mod(i/5.6,256.0)/64.0;
+  if(i<0.0) i+=4.0;
+  if(i>=2.0) i=4.0-i;
+  d=r/350.0;
+  d+=sin(d*d*8.0)*0.52;
+  f=(sin(a*g)+1.0)/2.0;
+  gl_FragColor=vec4(vec3(f*i/1.6,i/2.0+d/13.0,i)*d*p.x+vec3(i/1.3+d/8.0,i/2.0+d/18.0,i)*d*(1.0-p.x),1.0);
 }
 
