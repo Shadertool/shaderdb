@@ -1,46 +1,72 @@
-// Texture from Jason Liebig's FLICKR collection of vintage labels and wrappers:
-// http://www.flickr.com/photos/jasonliebigstuff/3739263136/in/photostream/
+// Earth model with bump mapping, specular texture and dynamic cloud layer.
+// Adpated from the THREE.js tutorial:
+// http://learningthreejs.com/blog/2013/09/16/how-to-make-the-earth-in-webgl/
 
-PImage label;
-PShape can;
-float angle;
+PShape earth;
+PShape clouds;
+PImage earthTex;
+PImage cloudTex;
+PImage alphaTex;
+PImage bumpMap;
+PImage specMap;
+PShader earthShader;
+PShader cloudShader;
 
-PShader shader;
+float earthRotation;
+float cloudsRotation;
 
-void setup() {
-  size(640, 360, P3D);  
-  label = loadImage("lachoy.jpg");
-  can = createCan(100, 200, 32, label);
-  shader = loadShader("fragment.glsl", "vertex.glsl");
+void setup() {  
+  size(600, 600, P3D);
+
+  earthTex = loadImage("earthmap1k.jpg");
+  cloudTex = loadImage("earthcloudmap.jpg");
+  alphaTex = loadImage("earthcloudmaptrans.jpg");
+  
+  bumpMap = loadImage("earthbump1k.jpg");
+  specMap = loadImage("earthspec1k.jpg");
+
+  earthShader = loadShader("EarthFrag.glsl", "EarthVert.glsl");
+  earthShader.set("texMap", earthTex);
+  earthShader.set("bumpMap", bumpMap);
+  earthShader.set("specularMap", specMap);
+  earthShader.set("bumpScale", 0.05);
+  
+  cloudShader = loadShader("CloudFrag.glsl", "CloudVert.glsl");
+  cloudShader.set("texMap", cloudTex);
+  cloudShader.set("alphaMap", alphaTex);
+  
+  earth = createShape(SPHERE, 200, 32, 32);
+  earth.setStroke(false);
+  earth.setSpecular(color(125));
+  earth.setShininess(10);
+  
+  clouds = createShape(SPHERE, 201, 32, 32);
+  clouds.setStroke(false);  
 }
 
-void draw() {    
-  background(0);  
-  shader(shader);
-  pointLight(255, 255, 255, width/2, height, 200);    
+void draw() {
+  background(0);
+  
   translate(width/2, height/2);
-  rotateY(angle);  
-  shape(can);  
-  angle += 0.01;
-}
-
-PShape createCan(float r, float h, int detail, PImage tex) {
-  textureMode(NORMAL);
-  PShape sh = createShape();
-  sh.beginShape(QUAD_STRIP);
-  sh.noStroke();
-  sh.texture(tex);
-  for (int i = 0; i <= detail; i++) {
-    float angle = TWO_PI / detail;
-    float x = sin(i * angle);
-    float z = cos(i * angle);
-    float u = float(i) / detail;
-    sh.normal(x, 0, z);
-    sh.vertex(x * r, -h/2, z * r, u, 0);
-    sh.vertex(x * r, +h/2, z * r, u, 1);    
-  }
-  sh.endShape(); 
-  return sh;
+  
+  pointLight(255, 255, 255, 300, 0, 500);  
+  
+  float targetAngle = map(mouseX, 0, width, 0, TWO_PI);  
+  earthRotation += 0.05 * (targetAngle - earthRotation);
+  
+  shader(earthShader);
+  pushMatrix();
+  rotateY(earthRotation);
+  shape(earth);
+  popMatrix();
+  
+  shader(cloudShader);
+  pushMatrix();
+  rotateY(earthRotation + cloudsRotation);
+  shape(clouds);
+  popMatrix();
+  
+  cloudsRotation += 0.001;
 }
 
 
