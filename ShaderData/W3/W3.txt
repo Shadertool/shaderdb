@@ -1,10 +1,10 @@
 Name:
-Linux
+W3
 Tags:
-shader, Linux
+shader, W3
 Description:
-Linux
+W3
 Autor:
-anfgomezmo
+W3
 Email:
 add your email (optional)
