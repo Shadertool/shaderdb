@@ -5,7 +5,7 @@ void setup() {
   size(640, 360, P3D);
   noStroke();
   fill(204);
-  toon = loadShader("fracgment.glsl", "vertex.glsl");
+  toon = loadShader("fragment.glsl", "vertex.glsl");
 }
 
 void draw() {
@@ -31,3 +31,4 @@ void mousePressed() {
     shaderEnabled = true;
   }
 }
+
