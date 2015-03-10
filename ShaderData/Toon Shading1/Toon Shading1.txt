@@ -1,0 +1,10 @@
+Name:
+Toon Shading1
+Tags:
+shader, Toon Shading1
+Description:
+Toon Shading
+Autor:
+anfgomezmo
+Email:
+add your email (optional)
