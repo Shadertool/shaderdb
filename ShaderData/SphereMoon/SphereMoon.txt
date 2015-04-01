@@ -1,0 +1,14 @@
+Name:
+SphereMoon
+Tags:
+shader, Moon, Sphere, Normal, Light, Lighting
+Description:
+This shader shows a lighting model that affects a normal in the moon
+
+You can zoom in with Z and out with A
+
+Press the left mouse control to see the lighting map effect
+Autor:
+anfgomezmo
+Email:
+add your email (optional)
