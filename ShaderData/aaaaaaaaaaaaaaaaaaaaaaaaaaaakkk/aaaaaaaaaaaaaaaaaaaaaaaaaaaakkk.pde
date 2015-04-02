@@ -1,17 +1,29 @@
-PShader neg;
+PShader shader1;
+PShape obj;
 PImage img;
-void setup() {
-  size(800, 600, P2D);
+float ry;
+boolean customShader;
+
+public void setup(){
+  
+  size (600, 360, P3D);
+  noStroke();
   img = loadImage("img.jpg");
-  neg = loadShader("fragment.glsl");
+  //obj = loadShape ("1.obj");
+  shader1 = loadShader("fragment.glsl");
   
+  shader1.set("resolution", float(width), float(height));  
+  
+    
 }
 
-
-void draw() {
-
-  shader(neg);
+public void draw () {
   
-  image(img, 0, 0);
-}
+  shader1.set("time", millis() / 1000.0); 
+  shader1.set("mouse", float(mouseX)/500, float(mouseY)/500);
+  noStroke();
+  shader(shader1); 
+  rect(0, 0, width, height);
+  
+}  
 
