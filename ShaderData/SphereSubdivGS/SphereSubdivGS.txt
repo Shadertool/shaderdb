@@ -1,0 +1,10 @@
+Name:
+SphereSubdivGS
+Tags:
+shader, geometry, sphere, geometry shader
+Description:
+Processing geometry shader test
+Autor:
+Test
+Email:
+add your email (optional)
