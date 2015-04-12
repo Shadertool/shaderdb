@@ -1,29 +1,20 @@
-PShader shader1;
-PShape obj;
-PImage img;
-float ry;
-boolean customShader;
+PShader shader;
 
-public void setup(){
-  
-  size (600, 360, P3D);
+void setup() {
+  size(640, 360, P2D);
   noStroke();
- 
-  
-  shader1 = loadShader("fragment.glsl");
-  
-  shader1.set("resolution", float(width), float(height));  
-  
-    
+  shader = loadShader("mario.glsl");
+  shader.set("resolution", float(width), float(height));   
 }
 
-public void draw () {
-  
-  shader1.set("time", millis() / 1000.0); 
-  noStroke();
-  shader(shader1); 
+void draw() {
+  background(0);
+    
+  shader.set("time", (float)(millis()/1000.0));
+  shader(shader); 
   rect(0, 0, width, height);
-  
-}  
+
+  frame.setTitle("frame: " + frameCount + " - fps: " + frameRate);     
+}
 
 
