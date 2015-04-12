@@ -1,10 +1,10 @@
 Name:
 PruebaTT
 Tags:
-shader, aaaaaaa
+shader, Prueba
 Description:
-aaaaaaa
+aaa
 Autor:
-aaaaa
+aaa
 Email:
 add your email (optional)
