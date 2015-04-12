@@ -1,71 +1,132 @@
-// Earth model with bump mapping, specular texture and dynamic cloud layer.
-// Adpated from the THREE.js tutorial:
-// http://learningthreejs.com/blog/2013/09/16/how-to-make-the-earth-in-webgl/
+PImage diffuseMap;
+PImage normalMap;
 
-PShape earth;
-PShape clouds;
-PImage earthTex;
-PImage cloudTex;
-PImage alphaTex;
-PImage bumpMap;
-PImage specMap;
-PShader earthShader;
-PShader cloudShader;
-
-float earthRotation;
-float cloudsRotation;
-
-void setup() {  
-  size(600, 600, P3D);
-
-  earthTex = loadImage("earthmap1k.jpg");
-  cloudTex = loadImage("earthcloudmap.jpg");
-  alphaTex = loadImage("earthcloudmaptrans.jpg");
+PShape can;
+float angle;
+PShape moon; 
+float zoom = 250; // scale factor aka zoom 
+PShader normalMapShader;
+ 
+ 
+void setup() {
+  size(400, 400, P3D);  
   
-  bumpMap = loadImage("earthbump1k.jpg");
-  specMap = loadImage("earthspec1k.jpg");
-
-  earthShader = loadShader("EarthFrag.glsl", "EarthVert.glsl");
-  earthShader.set("texMap", earthTex);
-  earthShader.set("bumpMap", bumpMap);
-  earthShader.set("specularMap", specMap);
-  earthShader.set("bumpScale", 0.05);
+  diffuseMap = loadImage("cmap.jpg");
+  normalMap = loadImage("cnormal.jpg");
+  moon = createIcosahedron(6); 
   
-  cloudShader = loadShader("CloudFrag.glsl", "CloudVert.glsl");
-  cloudShader.set("texMap", cloudTex);
-  cloudShader.set("alphaMap", alphaTex);
-  
-  earth = createShape(SPHERE, 200, 32, 32);
-  earth.setStroke(false);
-  earth.setSpecular(color(125));
-  earth.setShininess(10);
-  
-  clouds = createShape(SPHERE, 201, 32, 32);
-  clouds.setStroke(false);  
+  //can = createCan(100, 200, 32, label);
+  can = createSphere(150, 74, diffuseMap);
+ normalMapShader = loadShader("frag.glsl", "vert.glsl");
+  shader(normalMapShader);
+  normalMapShader.set("normalMap", normalMap);
 }
-
-void draw() {
+ 
+ 
+void draw() {    
   background(0);
-  
+  //shader(normalMapShader);      
   translate(width/2, height/2);
+  rotateX(-PI/2);
+  rotateZ(angle);  
   
-  pointLight(255, 255, 255, 300, 0, 500);  
+      // zoom out/in with the -/+ keys
+  if (keyPressed) {
+    if (key == 'a') { zoom -= 3; }
+    if (key == 'z' || key == '=') { zoom += 3; }
+  }
+  scale(zoom); // set the scale/zoom level
   
-  float targetAngle = map(mouseX, 0, width, 0, TWO_PI);  
-  earthRotation += 0.05 * (targetAngle - earthRotation);
   
-  shader(earthShader);
-  pushMatrix();
-  rotateY(earthRotation);
-  shape(earth);
-  popMatrix();
-  
-  shader(cloudShader);
-  pushMatrix();
-  rotateY(earthRotation + cloudsRotation);
-  shape(clouds);
-  popMatrix();
-  
-  cloudsRotation += 0.001;
+  shape(moon);
+  //shape(can);  
+  angle += 0.01;
+
 }
+ 
+ 
+PShape createCan(float r, float h, int detail, PImage tex) {
+  textureMode(NORMAL);
+  PShape sh = createShape();
+  sh.beginShape(QUAD_STRIP);
+  sh.noStroke();
+  sh.texture(tex);
+  for (int i = 0; i <= detail; i++) {
+    float angle = TWO_PI / detail;
+    float x = sin(i * angle);
+    float z = cos(i * angle);
+    float u = float(i) / detail;
+    sh.normal(x, 0, z);
+    sh.vertex(x * r, -h/2, z * r, u, 0);
+    sh.vertex(x * r, +h/2, z * r, u, 1);    
+  }
+  sh.endShape(); 
+  return sh;
+}
+ 
+ 
+PShape createSphere(float r, int detail, PImage tex) {
+  textureMode(IMAGE);
+  PShape sh = createShape();
+//
+  final float dA = TWO_PI / detail; // change in angle
+ 
+  // process the sphere one band at a time
+  // going from almost south pole to almost north
+  // poles must be handled separately
+  float theta2 = -PI/2+dA;
+  float SHIFT = PI/2;
+  float z2 = sin(theta2); // height off equator
+  float rxyUpper = cos(theta2); // closer to equator
+   
+  
+  for (int i = 1; i < detail; i++) {
+    float theta1 = theta2; 
+    theta2 = theta1 + dA;
+    float z1 = z2;
+    z2 = sin(theta2);
+    float rxyLower = rxyUpper;
+    rxyUpper = cos(theta2); // radius in xy plane
+   sh.beginShape(TRIANGLES);
+   sh.noStroke();
+   sh.texture(tex);
+    for (int j = 0; j <= detail; j++) {
+      float phi = j * dA; //longitude in radians
+      float xLower = rxyLower * cos(phi);
+      float yLower = rxyLower * sin(phi);
+      float xUpper = rxyUpper * cos(phi);
+      float yUpper = rxyUpper * sin(phi);
+      float u = phi/TWO_PI;
+      sh.normal(xUpper, yUpper, z2);
+      sh.vertex(r*xUpper, r*yUpper, r*z2, u,(theta2+SHIFT)/PI);    
+      sh.normal(xLower, yLower, z1);
+      sh.vertex(r*xLower, r*yLower, r*z1, u,(theta1+SHIFT)/PI);
+    }
+    sh.endShape();   
+  }
+  return sh;
+}
+
+void mouseMoved(){
+  updateCursorCoords();
+}
+ 
+void mouseDragged(){
+  updateCursorCoords();
+}
+ 
+void updateCursorCoords(){
+  normalMapShader.set("mouseX", (float)mouseX);
+  normalMapShader.set("mouseY", height - (float)mouseY);
+}
+ 
+void mousePressed(){
+  normalMapShader.set("useSpecular", 1);
+}
+ 
+void mouseReleased(){
+  normalMapShader.set("useSpecular", 0);
+}
+
+ 
 
