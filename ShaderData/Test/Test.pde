@@ -1,65 +1,71 @@
-// Sphere subdivision using the geometry shader.
-// However, the GS shouldn't be used to perform 
-// tessellation because it process the output primitives
-// sequentially w/out parallelization.
-//
-// Useful applications of the GS
-// * recalculate normals after vertex displacement
-// * primitive distortion (e.g.: explode geometry along the normals)
-// * normal and edge rendering
-// * geometry culling
-// http://renderingwonders.wordpress.com/2011/02/07/chapter-11-%E2%80%93-advanced-shader-usage-geometry-shaders/
+// Earth model with bump mapping, specular texture and dynamic cloud layer.
+// Adpated from the THREE.js tutorial:
+// http://learningthreejs.com/blog/2013/09/16/how-to-make-the-earth-in-webgl/
 
-import javax.media.opengl.GL;
-import javax.media.opengl.GL3;
-import javax.media.opengl.GL4;
-{ PJOGL.PROFILE = 3; }
+PShape earth;
+PShape clouds;
+PImage earthTex;
+PImage cloudTex;
+PImage alphaTex;
+PImage bumpMap;
+PImage specMap;
+PShader earthShader;
+PShader cloudShader;
 
-PShape octa;
-PShader simple;
-PShader subdiv;
-PShader showNormals;
-float angle;
-boolean useSubdiv = true;
+float earthRotation;
+float cloudsRotation;
 
-void setup() {
-  size(400, 400, P3D);
+void setup() {  
+  size(600, 600, P3D);
 
-  octa = createOctahedron();
+  earthTex = loadImage("earthmap1k.jpg");
+  cloudTex = loadImage("earthcloudmap.jpg");
+  alphaTex = loadImage("earthcloudmaptrans.jpg");
+  
+  bumpMap = loadImage("earthbump1k.jpg");
+  specMap = loadImage("earthspec1k.jpg");
 
-  simple = new GeometryShader(this, "PassthrouVert.glsl", "SimpleGeom.glsl", "SimpleFrag.glsl");
-  subdiv = new GeometryShader(this, "PassthrouVert.glsl", "SubdivGeom.glsl", "SimpleFrag.glsl");
-  showNormals = new GeometryShader(this, "PassthrouVert.glsl", "ShowNormalsGeom.glsl", "SimpleFrag.glsl");
-  shader(subdiv);
+  earthShader = loadShader("EarthFrag.glsl", "EarthVert.glsl");
+  earthShader.set("texMap", earthTex);
+  earthShader.set("bumpMap", bumpMap);
+  earthShader.set("specularMap", specMap);
+  earthShader.set("bumpScale", 0.05);
+  
+  cloudShader = loadShader("CloudFrag.glsl", "CloudVert.glsl");
+  cloudShader.set("texMap", cloudTex);
+  cloudShader.set("alphaMap", alphaTex);
+  
+  earth = createShape(SPHERE, 200, 32, 32);
+  earth.setStroke(false);
+  earth.setSpecular(color(125));
+  earth.setShininess(10);
+  
+  clouds = createShape(SPHERE, 201, 32, 32);
+  clouds.setStroke(false);  
 }
 
 void draw() {
-  background(0);  
-
-  pointLight(204, 204, 204, 0, 0, 200);
-
-  translate(width/2, height/2, 0);
+  background(0);
   
-  scale(100);
-  angle += 0.01;
-  rotateY(angle);  
-  shape(octa);
-  if (useSubdiv) {
-    shader(showNormals);
-    shape(octa);
-    shader(subdiv);
-  }
+  translate(width/2, height/2);
+  
+  pointLight(255, 255, 255, 300, 0, 500);  
+  
+  float targetAngle = map(mouseX, 0, width, 0, TWO_PI);  
+  earthRotation += 0.05 * (targetAngle - earthRotation);
+  
+  shader(earthShader);
+  pushMatrix();
+  rotateY(earthRotation);
+  shape(earth);
+  popMatrix();
+  
+  shader(cloudShader);
+  pushMatrix();
+  rotateY(earthRotation + cloudsRotation);
+  shape(clouds);
+  popMatrix();
+  
+  cloudsRotation += 0.001;
 }
-
-void keyPressed() {
-  useSubdiv = !useSubdiv;
-  if (useSubdiv) shader(subdiv);
-  else shader(simple);
-}
-
-void mouseMoved() {
-  subdiv.set("level", int(map(mouseX, 0, width, 0, 4)));
-  showNormals.set("level", int(map(mouseX, 0, width, 0, 4)));
-}  
-
 
