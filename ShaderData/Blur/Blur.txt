@@ -1,7 +1,10 @@
-Name: Blur
-
-Archives: fragment.glsl
-
-Tags: Texture shader, Filter, Blur, Post Processing Filter, 
-
-Description: The shader creates a Blur effect filter in the rgb channels of a texture or image. 
+Name:
+Blur
+Tags:
+shader, Blur, Blur shader, Blur effect
+Description:
+Test of a Blur shader
+Autor:
+anfgomezmo
+Email:
+add your email (optional)
