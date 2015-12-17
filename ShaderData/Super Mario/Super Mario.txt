@@ -1,10 +1,10 @@
 Name:
 Super Mario
 Tags:
-shader, supermario, mario, super mario
+shader, super mario, Mario, NES, fragment, videogames
 Description:
-Super Mario
+The shader was ported from www.shadertoy.com, generates a small Super Mario (Nintendo) game movement compiled directly in the fragment shader
 Autor:
-Test
+anfgomezmo
 Email:
-add your email (optional)
+anfgomezmo@gmail.com
