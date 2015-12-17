@@ -1,6 +1,3 @@
- /* Press the mouse to switch between the custom and default shader.
- */
-
 PShader blur;
 
 void setup() {
@@ -15,6 +12,7 @@ void draw() {
   rect(mouseX, mouseY, 150, 150); 
   ellipse(mouseX, mouseY, 100, 100);
 }
+
 
 
 

@@ -1,10 +1,10 @@
 Name:
 Blur
 Tags:
-shader, Blur, Blur shader, Blur effect
+shader, Blur, dim effect, unclear effect, cloudy effect, filter
 Description:
-Test of a Blur shader
+The shader shows a simple blue effect in a basic model.
 Autor:
 anfgomezmo
 Email:
-add your email (optional)
+anfgomezmo@gmail.com
