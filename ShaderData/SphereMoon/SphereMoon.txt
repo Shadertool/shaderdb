@@ -1,14 +1,11 @@
 Name:
 SphereMoon
 Tags:
-shader, Moon, Sphere, Normal, Light, Lighting
+shader, bump mapping, mapping, normal mapping, lighting, textured model
 Description:
-This shader shows a lighting model that affects a normal in the moon
-
-You can zoom in with Z and out with A
-
-Press the left mouse control to see the lighting map effect
+Bump mapping shader applied into a textured model. 
+Use the keys Z and A to zoom, press the left mouse button to use another lighting source and move the mose from right to left to change the light intensity.
 Autor:
 anfgomezmo
 Email:
-add your email (optional)
+anfgomezmo@gmail.com

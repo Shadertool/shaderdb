@@ -15,9 +15,9 @@ void setup() {
   normalMap = loadImage("cnormal.jpg");
   moon = createIcosahedron(6); 
   
-  //can = createCan(100, 200, 32, label);
+  
   can = createSphere(150, 74, diffuseMap);
- normalMapShader = loadShader("frag.glsl", "vert.glsl");
+  normalMapShader = loadShader("frag.glsl", "vert.glsl");
   shader(normalMapShader);
   normalMapShader.set("normalMap", normalMap);
 }
@@ -129,3 +129,4 @@ void mouseReleased(){
 }
 
  
+
